@@ -9,11 +9,11 @@ Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University,
 -CDFAE Digital Media Collector - DoD Cyber Crime Center (DC3) / Stevenson University 
 
 ## Featured Projects
-<a href="   ">Digital Forensic Case Study</a>
+<a href="">Digital Forensic Case Study</a>
 
 Full forensic investigation of a public case dataset using Autopsy - chain of custody, evidence recovery, timeline analysis, and a formal examiner-style report. (Currently in progress) 
 
-<a href="    ">Home SOC Detection Lab</a>
+<a href="">Home SOC Detection Lab</a>
 
 Multi-VM lab (Security Onion, Kali Linux, Metasploitable2) simulating a network attack and detecting it via Suricata/Zeek/Kibana, with a Teir-1-style incident triage writeup. (Currently in progress)  
 
