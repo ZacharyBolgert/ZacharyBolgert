@@ -40,9 +40,9 @@ Source: https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
 Acquisition method: downloaded, added as data source in Autopsy
 
 Hash value (MD5/SHA1): 
-- MD5 (Windows PowerShell): 6C1A7C4F1BBE0299B4AAE9BEBD1E6665
-- SHA1 (Windows PowerShell): C16B321C3020C432ECDB1A033521BB1704AF8EBE
-
+- MD5 (Windows PowerShell): 81963FDA7FE81D39051CD593FCF93409
+- SHA1 (Windows PowerShell): 8459DBE44EFBCFC2E0443F05895069DB1D8D5C4A
+<img width="1005" height="302" alt="AffricanFalls Hash Values" src="https://github.com/user-attachments/assets/482a6d98-7c21-49df-b63f-5b396994b7b9" />
 
 
 Integrity confirmed: yes/no, and how verified
