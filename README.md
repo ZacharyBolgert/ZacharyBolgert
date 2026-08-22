@@ -9,30 +9,56 @@ Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University,
 -CDFAE Digital Media Collector - DoD Cyber Crime Center (DC3) / Stevenson University 
 
 ## Featured Projects
-<a href="">Digital Forensic Case Study - Wes Mantooth Case</a>
+<a href="">Digital Forensic Case Study - AfricanFalls (CyberDefenders)</a>
 
-This project documents a digital forensics investigation conducted on the Wes Mantooth practice disk image using Autopsy. The investigation follows a standard forensic workflow - case setup, evidence acquisition, ingest processing, artifact analysis, and report generation - to identify and document evidence relevant to the case scenario.
+This project documents a digital forensics investigation of the "AfricanFalls" case from CyberDefenders — a laptop disk image belonging to a suspect accused of illegal activity. The investigation follows a formal forensic workflow using Autopsy to verify evidence integrity, recover artifacts, and reconstruct the suspect's digital activity, including browsing history, deleted files, stored credentials, and network reconnaissance behavior.
 
+Challenge source:
+- https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
 ## Tools Used 
 - Autopsy (version 4.23.1)
 - VirtualBox (Windows 11 VM environment)
-- HxD 
+- FTK Imager  
 
 ## Case Information 
 
 ## Field            |      Detail 
+
 Case Number         | 001 
 
 Examiner            | Zachary Bolgert
 
 Date of Examination | 8/22/2026
 
-Evidence Source     | Wes Mantooth practice case (public beginner forensics dataset) 
+Evidence Source     | CyberDefenders — AfricanFalls (public blue team CTF challenge)
 
-Evidence Description | 
+Evidence Description | Laptop disk image, suspect "John Doe"
 
-## Step 1: Forensic Workstation Setup 
-My Windows 11 in VirtualBox, where the case files/evidence was stored, and organized. 
+## Chain of Custody / Evidence Integrity
+Source: https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
+
+Acquisition method: downloaded, added as data source in Autopsy
+
+Hash value (MD5/SHA1): (calculated on ingest — record here, and confirm it matches the published hash if provided)
+
+Integrity confirmed: yes/no, and how verified
+
+## Methodology
+Created new case in Autopsy, entered case/examiner info
+
+Added disk image as data source
+
+Ran ingest modules: (list — Hash Lookup, Recent Activity, Keyword Search, File Type Identification, etc.)
+
+Investigated using the following views/tools: (e.g. Registry analysis, browser history, deleted files)
+
+
+
+
+
+
+
+
 
 
 
