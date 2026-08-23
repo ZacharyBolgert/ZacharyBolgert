@@ -11,7 +11,7 @@ Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University,
 ## Featured Projects
 ## Digital Forensic Case Study - AfricanFalls (CyberDefenders)
 
-This project documents a digital forensics investigation of the "AfricanFalls" case from CyberDefenders — a laptop disk image belonging to a suspect accused of illegal activity. The investigation follows a formal forensic workflow using FTK Imager to verify evidence integrity, recover artifacts, and reconstruct the suspect's digital activity, including browsing history, deleted files, stored credentials, and network reconnaissance behavior.
+This project documents a digital forensics investigation of the "AfricanFalls" case from CyberDefenders — a laptop logical forensic image belonging to a suspect accused of illegal activity. The investigation follows a formal forensic workflow using FTK Imager to verify evidence integrity, recover artifacts, and reconstruct the suspect's digital activity, including browsing history, deleted files, stored credentials, and network reconnaissance behavior.
 
 Challenge source:
 - https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
@@ -55,7 +55,8 @@ Added logical forensics image as data source
 
 Verified logical forensic image using verify drive/image
 
-Investigated using the following views/tools: (e.g. tool bar, status bar, details)
+Investigated using the following views/tools: (FTK Imager for browsing/export, DB Browser for SQLite, DCode, Timeline Explorer, PECmd)
+
 <img width="380" height="309" alt="Screenshot 2026-08-23 124838" src="https://github.com/user-attachments/assets/eb0fb386-ba42-46f7-a077-c7f0a2d50fce" />
 
 ## Findings
@@ -108,11 +109,22 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 <img width="1022" height="604" alt="Tor" src="https://github.com/user-attachments/assets/7a5c89ed-867d-4944-8d66-ff2fb5ab5c73" />
 <img width="1029" height="845" alt="Prefetch " src="https://github.com/user-attachments/assets/caa32fe4-3ba0-486c-b484-825185ef2fb4" />
 
+7. Command Execution History / Network Reconnaissance
+- What was found: ConsoleHost_history.txt (PowerShell command history) revealing actual commands executed, including bettercap (network attack tool, run with --no-spoofing, -caplet http-ui), nmap scans against local subnet ranges (10.0.2.1-254) and the domain dfir.science, and multiple sdelete commands targeting specific files/folders including .\accountNum and .\accountNum.zip.
+- Significance: Provides direct, command-level proof — not just search history — that the suspect actively ran network scanning and attack tools (nmap, bettercap) against the local network, and used secure deletion (sdelete) specifically on a file/folder named "accountNum," suggesting an attempt to permanently destroy financial or account-related evidence.
+<img width="1016" height="883" alt="Command line" src="https://github.com/user-attachments/assets/0ed30b1d-c327-4800-9753-63f0670a4d56" />
 
 ## Conclusion
-
+- This investigation of the AfricanFalls disk image reveals a clear and escalating pattern of malicious intent. The suspect progressed from researching network attack tools, password cracking methods, and anti-forensic techniques, to actively downloading and installing this software (Cain & Abel, Tor Browser, password wordlists), to executing real attacks and reconnaissance against the local network (nmap, bettercap). Evidence of FTP configuration to a Kali Linux host suggests coordinated exfiltration or attack activity, while the targeted deletion of a file specifically named "accountNum" indicates an attempt to destroy evidence related to financial account compromise. Combined with the suspect's use of encrypted communications (ProtonMail) and anonymization tools (Tor), the evidence supports the conclusion that John Doe engaged in deliberate, premeditated illegal network activity and took active steps to conceal it. All artifacts were recoverable despite deletion attempts, demonstrating the value of forensic recovery techniques even against anti-forensic behavior.
 ## Skills Demonstrated
-
+- Forensic image acquisition and integrity verification (FTK Imager, hash validation)
+- SQLite database analysis for browser artifact recovery (DB Browser for SQLite)
+- Deleted file recovery and Recycle Bin metadata analysis
+- Timestamp decoding and timeline reconstruction (DCode, Timeline Explorer)
+- Program execution analysis via Prefetch parsing (PECmd)
+- PowerShell command history analysis
+- Network artifact analysis and correlation across multiple evidence sources
+- Formal chain-of-custody and forensic report documentation
 
 
 
