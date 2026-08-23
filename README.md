@@ -75,16 +75,16 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 
 
 2. Deleted Files / Recovered Data
-What was found:
-Significance:
+- What was found:
+- Significance:
 
 3. Stored Credentials / Password Exposure
-What was found:
-Significance:
+- What was found:
+- Significance:
 
 4. Network Reconnaissance / Scanning Activity
-What was found (e.g. port scanning tools, Tor usage):
-Significance:
+- What was found (e.g. port scanning tools, Tor usage):
+- Significance:
 
 ## Timeline
 Date/Time	Event
