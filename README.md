@@ -69,6 +69,10 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 - Significance: Confirms active research and tool-seeking beyond search terms alone — shows the suspect visited tutorial content and software download pages, indicating intent to acquire and use these tools, not just casual searching.
 <img width="721" height="715" alt="SQLite Urls" src="https://github.com/user-attachments/assets/de723d79-8331-4a09-8981-2fe84be97f7c" />
 
+- What was found: Chrome urls table showing downloads of Cain & Abel password cracking tool, Tor Browser download and install, IP address hiding guides, and password wordlists from SecLists on GitHub (rockyou, common credentials, 10-million password lists).
+- Significance: Shows the suspect actually downloaded password-cracking tools and wordlists, and installed Tor for anonymity — moving beyond research into active tool acquisition for cracking credentials and hiding identity.
+<img width="742" height="738" alt="SQL URls table" src="https://github.com/user-attachments/assets/7759013e-65b5-4260-85bf-d861314e8913" />
+
 
 2. Deleted Files / Recovered Data
 What was found:
