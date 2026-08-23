@@ -75,8 +75,13 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 
 
 2. Deleted Files / Recovered Data
-- What was found:
-- Significance:
+- What was found: Recycle Bin metadata ($I/$R file pair) revealing a deleted file originally located at C:\Users\John Doe\Downloads\10-million-password-list-top-100.txt, deleted 4/29/2021.
+- Significance: Shows the suspect downloaded a password cracking wordlist and later deleted it — an attempt to remove evidence of password cracking activity, though the file remained recoverable in the Recycle Bin.
+<img width="988" height="592" alt="passwords" src="https://github.com/user-attachments/assets/3279302f-c26c-4f10-95e9-6c820486f54c" />
+
+- What was found: Recovered content of the deleted $RW9BJ2Z.txt file from Recycle Bin, confirmed to be the actual "10-million-password-list-top-100.txt" wordlist — a list of common passwords (123456, password, qwerty, dragon, monkey, etc.).
+- Significance: Directly confirms the deleted file was a real password cracking wordlist, not just a suspiciously-named file — full content recovery proves the suspect possessed and later attempted to hide password-cracking material.
+<img width="1022" height="809" alt="image" src="https://github.com/user-attachments/assets/02c2116e-842e-41f1-b723-b825ebac86ca" />
 
 3. Stored Credentials / Password Exposure
 - What was found:
