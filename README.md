@@ -1,5 +1,5 @@
 ## Hello, I'm Zachary Bolgert
-Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University, based in Culpeper, VA. Focused on incident response, vulnerability management, and digital forensics; currently seeking an entry-level cybersecurity role.  
+Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University. Focused on incident response, vulnerability management, and digital forensics; currently seeking an entry-level cybersecurity role.  
 
 ## Certifications 
 -CompTIA Security + (SYO-701)
