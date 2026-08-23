@@ -19,6 +19,7 @@ Challenge source:
 - VirtualBox (Windows 11 VM environment)
 - FTK Imager
 - DB Browser for SQLite
+- Autopsy
 
 ## Case Information 
 
@@ -65,27 +66,29 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 - Significance: Shows research and preparation for network attacks and anonymized/untraceable access.
 <img width="747" height="844" alt="SQLite" src="https://github.com/user-attachments/assets/88c07aea-7788-4db0-ad8d-ee12fb163341" />
 
-3. Deleted Files / Recovered Data
+2. Deleted Files / Recovered Data
 What was found:
 Significance:
 
-4. Stored Credentials / Password Exposure
+3. Stored Credentials / Password Exposure
 What was found:
 Significance:
 
-5. Network Reconnaissance / Scanning Activity
+4. Network Reconnaissance / Scanning Activity
 What was found (e.g. port scanning tools, Tor usage):
 Significance:
 
+**Timeline**
+Date/Time	Event
+
+**Conclusion**
+
+**Skills Demonstrated**
 
 
 
 
-
-
-
-
-<a href="">Home SOC Detection Lab</a>
+## Home SOC Detection Lab
 
 Multi-VM lab (Security Onion, Kali Linux, Metasploitable2) simulating a network attack and detecting it via Suricata/Zeek/Kibana, with a Teir-1-style incident triage writeup. (Currently in progress)  
 
