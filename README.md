@@ -9,16 +9,15 @@ Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University,
 -CDFAE Digital Media Collector - DoD Cyber Crime Center (DC3) / Stevenson University 
 
 ## Featured Projects
-<a href="">Digital Forensic Case Study - AfricanFalls (CyberDefenders)</a>
+## Digital Forensic Case Study - AfricanFalls (CyberDefenders)
 
 This project documents a digital forensics investigation of the "AfricanFalls" case from CyberDefenders — a laptop disk image belonging to a suspect accused of illegal activity. The investigation follows a formal forensic workflow using Autopsy to verify evidence integrity, recover artifacts, and reconstruct the suspect's digital activity, including browsing history, deleted files, stored credentials, and network reconnaissance behavior.
 
 Challenge source:
 - https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
 ## Tools Used 
-- Autopsy (version 4.23.1)
 - VirtualBox (Windows 11 VM environment)
-- FTK Imager  
+- FTK Imager 
 
 ## Case Information 
 
@@ -32,31 +31,45 @@ Date of Examination | 8/22/2026
 
 Evidence Source     | CyberDefenders — AfricanFalls (public blue team CTF challenge)
 
-Evidence Description | Laptop disk image, suspect "John Doe"
+Evidence Description | Laptop logical forensic image, suspect "John Doe"
 
 ## Chain of Custody / Evidence Integrity
 Source: https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
 
-Acquisition method: downloaded, added as data source in Autopsy
+Acquisition method: downloaded, added as data source in FTK Imager 
 
 Hash value (MD5/SHA1): 
-- MD5 (Windows PowerShell): 81963FDA7FE81D39051CD593FCF93409
-- SHA1 (Windows PowerShell): 8459DBE44EFBCFC2E0443F05895069DB1D8D5C4A
-<img width="1005" height="302" alt="AffricanFalls Hash Values" src="https://github.com/user-attachments/assets/482a6d98-7c21-49df-b63f-5b396994b7b9" />
-
-
-Integrity confirmed: yes/no, and how verified
+- MD5: 9471e69c95d8909ae60ddff30d50ffa1
+- SHA1: 167aa08db25dfeeb876b0176ddc329a3d9f2803a
+<img width="787" height="259" alt="AfricanFalls Hash Values" src="https://github.com/user-attachments/assets/90adb232-0e3d-4e38-9f91-0dd695af7e13" />
+Integrity confirmed: Yes, I verified the logical forensic image (DiskDrigger.ad1) using FTK Imager   
 
 ## Methodology
-Created new case in Autopsy, entered case/examiner info
+Added Evidence Item using FTK Imager, selected source evidence type (Image File)
 
-Added disk image as data source
+Added logical forensics image as data source
 
-Ran ingest modules: (list — Hash Lookup, Recent Activity, Keyword Search, File Type Identification, etc.)
+Verified logical forensic image using verify drive/image
 
-Investigated using the following views/tools: (e.g. Registry analysis, browser history, deleted files)
+Investigated using the following views/tools: (e.g. tool bar, status bar, details)
+<img width="380" height="309" alt="Screenshot 2026-08-23 124838" src="https://github.com/user-attachments/assets/eb0fb386-ba42-46f7-a077-c7f0a2d50fce" />
 
+## Findings
+1. Browsing History & Search Activity
+What was found:
+Significance:
 
+2. Deleted Files / Recovered Data
+What was found:
+Significance:
+
+3. Stored Credentials / Password Exposure
+What was found:
+Significance:
+
+4. Network Reconnaissance / Scanning Activity
+What was found (e.g. port scanning tools, Tor usage):
+Significance:
 
 
 
