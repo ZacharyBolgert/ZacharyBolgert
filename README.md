@@ -19,6 +19,9 @@ Challenge source:
 - VirtualBox (Windows 11 VM environment)
 - FTK Imager
 - DB Browser for SQLite
+- DCode (version 5.7)
+- Timeline Explorer (version 2026.5.0)
+- PECmd
 
 ## Case Information 
 
@@ -83,16 +86,28 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 - Significance: Directly confirms the deleted file was a real password cracking wordlist, not just a suspiciously-named file — full content recovery proves the suspect possessed and later attempted to hide password-cracking material.
 <img width="1022" height="809" alt="image" src="https://github.com/user-attachments/assets/02c2116e-842e-41f1-b723-b825ebac86ca" />
 
-3. Stored Credentials / Password Exposure
-- What was found:
-- Significance:
+3. Anonymous/Encrypted Communications
+- What was found: Browser history showing searches for ProtonMail (encrypted email service) and login/inbox activity for a ProtonMail account (dreammaker82@protonmail.com).
+- Significance: Shows the suspect set up and actively used an encrypted, harder-to-trace email account — consistent with the broader pattern of seeking anonymous communication channels alongside the earlier "secure messaging app" searches, further supporting intent to conceal identity and communications.
+<img width="573" height="266" alt="email" src="https://github.com/user-attachments/assets/2bff9499-42f4-49bf-86ed-7a61aeb7bc13" />
 
-4. Network Reconnaissance / Scanning Activity
-- What was found (e.g. port scanning tools, Tor usage):
-- Significance:
 
-## Timeline
-Date/Time	Event
+4. Network Activity / FTP Client Configuration
+- What was found: FileZilla recentservers.xml configuration file showing a saved FTP connection to host 192.168.1.20 on port 21, using username "kali."
+- Significance: Confirms FileZilla (FTP client) was installed and actively configured to connect to a host on the local network using the username "kali" — suggesting a connection to a Kali Linux machine, potentially for transferring files off the system or coordinating with attack tooling. This is a strong piece of evidence tying the suspect's activity to broader network compromise/exfiltration behavior, not just isolated research.
+<img width="1016" height="717" alt="recent servers" src="https://github.com/user-attachments/assets/3fef0270-808c-4cc6-8141-54351e4fa799" />
+
+5. Timeline Reconstruction / Timestamp Analysis
+- What was found: Chromium timestamp (13264194013047881) from the browser history decoded via DCode, confirming the exact UTC date/time the "10-million-password-list-top-1000000.txt" file was downloaded.
+- Significance: Establishes a precise, verified timestamp for this download — ties directly to the earlier password wordlist finding and strengthens the timeline by showing exactly when the suspect acquired that file.
+<img width="1024" height="951" alt="Time stamp" src="https://github.com/user-attachments/assets/6f4bc80c-a5b1-49bd-8a68-7f1cbf257142" />
+
+6. Program Execution Evidence
+- What was found: PECmd/Prefetch analysis shows TORBROWSER-INSTALL-WIN64-10.0.exe was executed on 2021-04-29 18:22:32 UTC — confirming the Tor Browser installer was run on the system.
+- Significance: Supports the earlier browser history findings (Tor searches and download) with proof the installer was actually executed, not just downloaded. Confirms progression from research → download → installation.
+<img width="1022" height="604" alt="Tor" src="https://github.com/user-attachments/assets/7a5c89ed-867d-4944-8d66-ff2fb5ab5c73" />
+<img width="1029" height="845" alt="Prefetch " src="https://github.com/user-attachments/assets/caa32fe4-3ba0-486c-b484-825185ef2fb4" />
+
 
 ## Conclusion
 
