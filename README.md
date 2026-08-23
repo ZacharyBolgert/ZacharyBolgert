@@ -17,7 +17,8 @@ Challenge source:
 - https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
 ## Tools Used 
 - VirtualBox (Windows 11 VM environment)
-- FTK Imager 
+- FTK Imager
+- DB Browser for SQLite
 
 ## Case Information 
 
@@ -56,18 +57,23 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 
 ## Findings
 1. Browsing History & Search Activity
+- What was found: Brave keyword_search_terms table showing searches for steganography, secure file deletion, and encrypted messaging apps.
+- Significance: Indicates deliberate attempts to hide data and cover digital tracks.
+<img width="726" height="401" alt="SQLite Keyword Search Term " src="https://github.com/user-attachments/assets/04c0947e-c8a6-400f-bc65-cf98681dbbd6" />
+
+- What was found: Chrome keyword_search_terms table showing searches for network attack tools (nmap, ettercap, bettercap, ARP spoofing, Wireshark), password/credential cracking (rockyou, password cracking lists, cain & abel), Tor, and IP-hiding methods.
+- Significance: Shows research and preparation for network attacks and anonymized/untraceable access.
+<img width="747" height="844" alt="SQLite" src="https://github.com/user-attachments/assets/88c07aea-7788-4db0-ad8d-ee12fb163341" />
+
+3. Deleted Files / Recovered Data
 What was found:
 Significance:
 
-2. Deleted Files / Recovered Data
+4. Stored Credentials / Password Exposure
 What was found:
 Significance:
 
-3. Stored Credentials / Password Exposure
-What was found:
-Significance:
-
-4. Network Reconnaissance / Scanning Activity
+5. Network Reconnaissance / Scanning Activity
 What was found (e.g. port scanning tools, Tor usage):
 Significance:
 
