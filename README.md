@@ -11,7 +11,7 @@ Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University,
 ## Featured Projects
 ## Digital Forensic Case Study - AfricanFalls (CyberDefenders)
 
-This project documents a digital forensics investigation of the "AfricanFalls" case from CyberDefenders — a laptop disk image belonging to a suspect accused of illegal activity. The investigation follows a formal forensic workflow using Autopsy to verify evidence integrity, recover artifacts, and reconstruct the suspect's digital activity, including browsing history, deleted files, stored credentials, and network reconnaissance behavior.
+This project documents a digital forensics investigation of the "AfricanFalls" case from CyberDefenders — a laptop disk image belonging to a suspect accused of illegal activity. The investigation follows a formal forensic workflow using FTK Imager to verify evidence integrity, recover artifacts, and reconstruct the suspect's digital activity, including browsing history, deleted files, stored credentials, and network reconnaissance behavior.
 
 Challenge source:
 - https://cyberdefenders.org/blueteam-ctf-challenges/africanfalls/
@@ -19,7 +19,6 @@ Challenge source:
 - VirtualBox (Windows 11 VM environment)
 - FTK Imager
 - DB Browser for SQLite
-- Autopsy
 
 ## Case Information 
 
@@ -66,6 +65,11 @@ Investigated using the following views/tools: (e.g. tool bar, status bar, detail
 - Significance: Shows research and preparation for network attacks and anonymized/untraceable access.
 <img width="747" height="844" alt="SQLite" src="https://github.com/user-attachments/assets/88c07aea-7788-4db0-ad8d-ee12fb163341" />
 
+- What was found: Brave urls table showing YouTube tutorials and site visits on hacking passwords with Kali Linux, ethical hacking, WiFi network attacks, OSINT phone lookups, steganography (including QuickStego software and JPHS), Shodan searches for vulnerable devices, and encrypted/anonymous messaging apps.
+- Significance: Confirms active research and tool-seeking beyond search terms alone — shows the suspect visited tutorial content and software download pages, indicating intent to acquire and use these tools, not just casual searching.
+<img width="721" height="715" alt="SQLite Urls" src="https://github.com/user-attachments/assets/de723d79-8331-4a09-8981-2fe84be97f7c" />
+
+
 2. Deleted Files / Recovered Data
 What was found:
 Significance:
@@ -78,12 +82,12 @@ Significance:
 What was found (e.g. port scanning tools, Tor usage):
 Significance:
 
-**Timeline**
+## Timeline
 Date/Time	Event
 
-**Conclusion**
+## Conclusion
 
-**Skills Demonstrated**
+## Skills Demonstrated
 
 
 
