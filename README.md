@@ -126,8 +126,6 @@ Investigated using the following views/tools: (FTK Imager for browsing/export, D
 - Network artifact analysis and correlation across multiple evidence sources
 - Formal chain-of-custody and forensic report documentation
 
-
-
 ## Home SOC Detection Lab
 
 Multi-VM lab (Security Onion, Kali Linux, Metasploitable2) simulating a network attack and detecting it via Suricata/Zeek/Kibana, with a Teir-1-style incident triage writeup. (Currently in progress)  
