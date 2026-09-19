@@ -128,16 +128,15 @@ Investigated using the following views/tools: (FTK Imager for browsing/export, D
 
 ## Home SOC Detection Lab
 
-Multi-VM lab (Security Onion, Kali Linux, Metasploitable2) simulating a network attack and detecting it via Suricata/Zeek/Kibana, with a Teir-1-style incident triage writeup. (Currently in progress)  
+This project documents the build of a virtualized Security Operations Center (SOC) lab for simulating a network attack and detecting it with a network security monitoring platform. The lab uses a Security Onion sensor, a Kali Linux attacker machine, and a Metasploitable2 target, all running in VirtualBox on an isolated network. The attack scenarios, detection analysis, and Tier-1 incident triage writeup will be added as they are completed.
 
-## Tools & Skills 
-Forensics: Autopsy, FTK Imager
+## Tools Used
+- VirtualBox
+- Security Onion 3.3.0
+- Kali Linux
+- Metasploitable2
 
-Security Monitoring: Security Onion, Suricata, Zeek, Kibana
 
-Networking: Wireshark, GNS3, TCP/IP, packet analysis
-
-Systems: Windows, Kali Linux =, Ubuntu Linux, VirtualBox 
 
 ## Connect
 - <a href="www.linkedin.com/in/zachary-bolgert-77338837b">LinkedIn</a>
