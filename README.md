@@ -8,7 +8,7 @@ Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University.
 
 -CDFAE Digital Media Collector - DoD Cyber Crime Center (DC3) / Stevenson University 
 
-## Featured Projects
+# Featured Projects
 ## Digital Forensic Case Study - AfricanFalls (CyberDefenders)
 
 This project documents a digital forensics investigation of the "AfricanFalls" case from CyberDefenders — a laptop logical forensic image belonging to a suspect accused of illegal activity. The investigation follows a formal forensic workflow using FTK Imager to verify evidence integrity, recover artifacts, and reconstruct the suspect's digital activity, including browsing history, deleted files, stored credentials, and network reconnaissance behavior.
@@ -135,7 +135,37 @@ This project documents the build of a virtualized Security Operations Center (SO
 - Security Onion 3.3.0
 - Kali Linux
 - Metasploitable2
+  
+## Network Setup
 
+## Topology
+- Security Onion (sensor): management NIC enp0s3 — Host-Only, 192.168.56.10/24
+                            sniffing NIC enp0s8 (bonded via bond0) — Internal Network "soc-lab"
+- Kali Linux (attacker):    eth0 — Internal Network "soc-lab", 10.10.10.10/24
+- Metasploitable2 (target): eth0 — Internal Network "soc-lab", 10.10.10.20/24
+
+## Steps taken
+1. Confirmed initial state: neither Kali nor Metasploitable2 had an IP
+   assigned on eth0 <img width="1568" height="782" alt="image" src="https://github.com/user-attachments/assets/e9efbd32-467f-4666-bb43-64ff39dd851f" />
+
+2. Assigned static IP to Kali:
+   - Quick test: `sudo ip addr add 10.10.10.10/24 dev eth0`
+   - Persisted via NetworkManager:
+     `sudo nmcli con mod "Wired connection 1" ipv4.address 10.10.10.10/24 ipv4.method manual`
+     `sudo nmcli con up "Wired connection 1"`
+3. Assigned static IP to Metasploitable2 by editing /etc/network/interfaces:
+   auto eth0
+   iface eth0 inet static
+       address 10.10.10.20
+       netmask 255.255.255.0
+   Then: `sudo /etc/init.d/networking restart`
+4. Verified both addresses with `ip a` <img width="1919" height="990" alt="Screenshot 2026-09-19 165303" src="https://github.com/user-attachments/assets/49dec51d-d165-417c-acfa-6fc02103dc66" />
+
+5. Confirmed connectivity: `ping -c 4 10.10.10.20` from Kali
+   <img width="633" height="246" alt="ping request " src="https://github.com/user-attachments/assets/c78266ad-e949-4d8a-8b0a-3a938d64c135" />
+
+6. Verified Security Onion sensor health: `sudo so-status`
+   (screenshot: 04-so-status.png)
 
 
 ## Connect
