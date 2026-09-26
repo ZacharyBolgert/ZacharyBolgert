@@ -181,7 +181,6 @@ Attempted T1003.001-2 (Dump LSASS.exe Memory using comsvcs.dll), a living-off-th
 Ran T1547.001-1 (Reg Key Run), which adds a registry Run key entry via `reg.exe` — the classic persistence technique for surviving reboots. Detected immediately and accurately by Wazuh's default ruleset: one rule specifically identified the registry modification via `reg.exe` for next-logon execution, and a second, higher-severity rule flagged the value's Base64-like pattern. Cleaned up the added registry key afterward using Atomic Red Team's built-in cleanup command.
 <img width="1919" height="955" alt="image" src="https://github.com/user-attachments/assets/fb0228ba-99ee-444b-8412-ef68d6857869" />
 
-
 ## Detection Results
 
 | ATT&CK Technique | Detected? | Rule ID | Notes |
@@ -190,6 +189,123 @@ Ran T1547.001-1 (Reg Key Run), which adds a registry Run key entry via `reg.exe`
 | T1003.001 | Blocked pre-execution | N/A | "Access is denied" attempting to dump LSASS via comsvcs.dll — no corresponding Defender Protection History entry, indicating the block came from Windows' LSASS PPL hardening rather than antivirus |
 | T1547.001 | Yes (default rule, no tuning needed) | 92302, 92041 | Registry Run key persistence via reg.exe — caught by both a technique-specific rule and a higher-severity Base64-pattern rule (level 10) |
 
+## AI-Assisted Alert Triage for Wazuh
+
+## Overview
+
+An experiment testing whether a small, locally-run LLM can meaningfully assist with SOC alert triage — pulling real alerts from a Wazuh SIEM and asking a local model to summarize and prioritize them. Built as a follow-up to my [Wazuh Detection Lab](#wazuh--sysmon--atomic-red-team-detection-lab), using its real alert data as input. The result: the model was inconsistent and prone to fabricating threat context, which turned out to be the more useful finding than a clean success would have been.
+
+## Architecture
+
+Runs entirely on the same Ubuntu VM as the Wazuh manager — no new infrastructure needed:
+
+| Component | Role | Software |
+|---|---|---|
+| Wazuh Indexer | Source of alert data, queried via REST API | OpenSearch (bundled with Wazuh) |
+| Ollama | Local LLM runtime, no cloud API, no cost | Ollama, running `llama3.2:1b` |
+| Python script | Pulls alerts, sends to local LLM, prints summary + priority | Python 3.14, `requests`, `ollama` libraries |
+
+Chose a fully local model over a cloud API (OpenAI/Claude/etc.) deliberately: no signup, no billing, no API key management, and it fits a security project better to keep alert data on-machine rather than sending it to a third party.
+
+---
+
+## Build Steps
+
+### 1. Set up a Python virtual environment
+Ubuntu 26.04's system Python blocks direct `pip install` for safety (PEP 668, "externally-managed-environment"). Used a virtual environment instead of overriding it:
+```bash
+sudo apt install python3-pip python3.14-venv -y
+python3 -m venv ~/wazuh-ai-triage/venv
+source ~/wazuh-ai-triage/venv/bin/activate
+pip install requests ollama
+```
+
+### 2. Confirmed direct access to Wazuh's alert data
+Wazuh's alerts live in its indexer (OpenSearch), not the manager's REST API. Verified access with a raw query before writing any Python:
+```bash
+curl -k -u admin:'<password>' "https://localhost:9200/wazuh-alerts-*/_search?pretty&size=1"
+```
+Returned a full alert as JSON, confirming the data path.
+
+### 3. Installed Ollama and pulled a local model
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2:1b
+```
+Chose a small (~1.3GB) model deliberately — the task (summarizing a short alert description) doesn't need frontier-level reasoning, and a small model keeps the whole thing running comfortably on a lab VM with no GPU.
+
+### 4. Wrote the triage script
+`triage.py` pulls the most recent alerts from the indexer, sends each one to the local model with a prompt asking for a plain-English summary and a LOW/MEDIUM/HIGH priority rating, and prints the result:
+
+```python
+import requests
+import ollama
+
+requests.packages.urllib3.disable_warnings()
+
+WAZUH_URL = "https://localhost:9200/wazuh-alerts-*/_search"
+WAZUH_USER = "admin"
+WAZUH_PASS = "<password>"
+
+def get_recent_alerts(count=5):
+    query = {
+        "size": count,
+        "sort": [{"@timestamp": {"order": "desc"}}]
+    }
+    response = requests.get(
+        WAZUH_URL,
+        auth=(WAZUH_USER, WAZUH_PASS),
+        json=query,
+        verify=False
+    )
+    return response.json()["hits"]["hits"]
+
+if __name__ == "__main__":
+    alerts = get_recent_alerts()
+    for alert in alerts:
+        rule = alert["_source"]["rule"]
+        description = rule["description"]
+        level = rule["level"]
+
+        prompt = f"Summarize this security alert in one plain-English sentence, and rate it as LOW, MEDIUM, or HIGH priority: '{description}' (severity level {level})"
+
+        response = ollama.generate(model="llama3.2:1b", prompt=prompt)
+
+        print(f"\n--- Original Alert (Level {level}) ---")
+        print(description)
+        print("--- AI Summary ---")
+        print(response["response"])
+```
+
+<img width="1291" height="816" alt="image" src="https://github.com/user-attachments/assets/425c4147-b8a3-4cdb-905a-4945b7ac8efa" />
+<img width="1267" height="219" alt="image" src="https://github.com/user-attachments/assets/9ff98636-99c2-42f2-ba35-aa6c59e1cd80" />
+
+
+### 5. Ran the script against real alerts — and found a problem
+Ran the script against genuine alerts pulled live from the indexer. The model was inconsistent and prone to fabricating threat context. Three identical **"PAM: Login session closed"** alerts, run back to back, were rated LOW, HIGH, and — most notably — one response claimed the session was "closed due to suspicious activity," a detail invented by the model that doesn't appear anywhere in the actual alert data.
+
+Example output (same alert type, two different ratings):
+```
+--- Original Alert (Level 3) ---
+PAM: Login session closed.
+--- AI Summary ---
+I would rate this security alert as LOW priority. The message is related to a
+user's login session, which is a low-risk issue and not typically considered
+a critical security vulnerability.
+
+--- Original Alert (Level 3) ---
+PAM: Login session closed.
+--- AI Summary ---
+As for the priority rating, I would rate it as HIGH. Here's why: The alert is
+related to a potential security vulnerability that could be exploited by an
+attacker to gain unauthorized access to the system or data...
+```
+<img width="1288" height="802" alt="image" src="https://github.com/user-attachments/assets/0a97e616-cee4-4d0d-a5fc-0843519ce67c" />
+<img width="1283" height="394" alt="image" src="https://github.com/user-attachments/assets/a9f9110c-9ad2-4cd4-9a8f-b278642ab002" />
+
+## Conclusion
+
+This project set out to test whether a small, locally-run LLM could meaningfully assist with SOC alert triage, using real alert data from my own Wazuh lab. The honest answer is no — not without more work. The model was inconsistent (rating identical alerts differently across runs) and, more seriously, fabricated threat context that wasn't present in the source data. That's a genuinely useful result: it demonstrates the kind of critical evaluation a security practitioner needs to apply to AI tooling before trusting it in a real workflow, rather than assuming AI-generated output is reliable by default.
 
 ## Connect
 - [LinkedIn](https://www.linkedin.com/in/zachary-bolgert-77338837b)
