@@ -160,9 +160,13 @@ Installed Ubuntu Server and ran the official Wazuh all-in-one installer. Hit an 
 
 ### 2. Installed Sysmon on the Windows 11 endpoint
 Installed Sysmon using the SwiftOnSecurity configuration to get detailed process-creation, network-connection, and registry telemetry beyond default Windows event logging.
+<img width="966" height="449" alt="image" src="https://github.com/user-attachments/assets/1cbbb8af-6e5c-4ff3-8591-7d7135eb20f4" />
 
 ### 3. Enrolled the Windows VM as a Wazuh agent
 Deployed the Wazuh agent from the manager's dashboard (pre-configured with the manager address and registration key) and confirmed the agent shows Active in the Wazuh dashboard, with Sysmon events flowing into Security Events.
+<img width="1919" height="325" alt="image" src="https://github.com/user-attachments/assets/782a50d7-1197-424e-9a64-67b0c747501b" />
+
+<img width="954" height="821" alt="image" src="https://github.com/user-attachments/assets/2ab76f46-ccdd-4e64-9d7d-2389375012c0" />
 
 ### 4. Attack simulation (in progress)
 Next step: install Atomic Red Team on the Windows endpoint and run a small set of MITRE ATT&CK techniques to test detection coverage.
