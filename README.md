@@ -132,10 +132,6 @@ Investigated using the following views/tools: (FTK Imager for browsing/export, D
 
 A home lab built to practice endpoint detection engineering. I deployed a Wazuh SIEM manager, instrumented a Windows 11 endpoint with Sysmon for detailed telemetry, and enrolled it as a monitored agent. The next phase simulates real attacker techniques with Atomic Red Team and measures detection coverage against the MITRE ATT&CK framework.
 
-**Status:** Wazuh manager and agent enrollment complete. Attack simulation and detection tuning in progress.
-
----
-
 ## Architecture
 
 Two VMs on an isolated internal network in VirtualBox:
