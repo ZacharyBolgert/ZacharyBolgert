@@ -165,24 +165,20 @@ Deployed the Wazuh agent from the manager's dashboard (pre-configured with the m
 <img width="954" height="821" alt="image" src="https://github.com/user-attachments/assets/2ab76f46-ccdd-4e64-9d7d-2389375012c0" />
 
 ### 4. Attack simulation 
-Next step: install Atomic Red Team on the Windows endpoint and run a small set of MITRE ATT&CK techniques to test detection coverage.
+Installed Atomic Red Team on the Windows endpoint, resolving two setup issues along the way: a PowerShell execution-policy block that prevented a required module from loading, and a Windows Defender exclusion needed for the atomic test files (Defender flags them as suspicious by design, since they mimic real attacker behavior). Ran T1059.001-17 (PowerShell Command Execution) as the first simulated technique.
 <img width="946" height="192" alt="image" src="https://github.com/user-attachments/assets/e8bdf56b-7250-441f-8117-4e6ca0ee327c" />
 
 
-### 5. Detection tuning (in progress)
-Next step: for any technique not caught by Wazuh's default ruleset, write a custom rule in `local_rules.xml` and confirm it fires correctly.
+### 5. Detection tuning
+Confirmed detection without writing any custom rules — Wazuh's default ruleset caught the PowerShell activity out of the box, including a level-12 alert for a PowerShell process spawning a base64-encoded command. Some events in the same window (rule 92203, "Executable file created by powershell") were Atomic Red Team installing its own test files rather than the technique itself — worth distinguishing actual technique signal from setup noise.
+<img width="1919" height="871" alt="image" src="https://github.com/user-attachments/assets/a1930fad-9499-4488-9429-6d7c4eec9a7d" />
 
----
 
 ## Detection Results
 
-*Coming soon — populated once attack simulation is complete.*
-
 | ATT&CK Technique | Detected? | Rule ID | Notes |
 |---|---|---|---|
-| — | — | — | — |
-
----
+| T1059.001 | Yes (default rule, no tuning needed) | 92057 | "Powershell.exe spawned a powershell process which executed a base64 encoded command" — level 12 alert |
 
 ## What's Next
 
