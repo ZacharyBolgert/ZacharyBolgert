@@ -156,6 +156,7 @@ Two VMs on an isolated internal network in VirtualBox:
 
 ### 1. Deployed the Wazuh manager
 Installed Ubuntu Server and ran the official Wazuh all-in-one installer. Hit an early snag where the install script wasn't actually present in the working directory — the first download attempts pointed at the wrong URL (`wazuh.com` instead of the actual package host, `packages.wazuh.com/4.12/wazuh-install.sh`), which silently saved an error page instead of the script. Fixed by pulling the script from the correct URL and confirming it landed with `ls -la` before running the install.
+<img width="1919" height="946" alt="image" src="https://github.com/user-attachments/assets/e97b478a-80a9-4e87-b97d-233547f34f18" />
 
 ### 2. Installed Sysmon on the Windows 11 endpoint
 Installed Sysmon using the SwiftOnSecurity configuration to get detailed process-creation, network-connection, and registry telemetry beyond default Windows event logging.
