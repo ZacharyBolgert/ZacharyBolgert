@@ -190,7 +190,6 @@ Finish Atomic Red Team simulation and detection tuning above, then consider exte
 ## Related Projects
 
 - Digital Forensics Case Investigation — CyberDefenders "AfricanFalls" — disk forensics, deleted file recovery, timeline reconstruction
-- Home SOC Detection Lab — Security Onion — network-level detection with Suricata/Zeek
 
 ## Connect
 - <a href="www.linkedin.com/in/zachary-bolgert-77338837b">LinkedIn</a>
