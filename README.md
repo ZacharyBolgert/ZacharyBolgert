@@ -173,20 +173,23 @@ Installed Atomic Red Team on the Windows endpoint, resolving two setup issues al
 Confirmed detection without writing any custom rules — Wazuh's default ruleset caught the PowerShell activity out of the box, including a level-12 alert for a PowerShell process spawning a base64-encoded command. Some events in the same window (rule 92203, "Executable file created by powershell") were Atomic Red Team installing its own test files rather than the technique itself — worth distinguishing actual technique signal from setup noise.
 <img width="1919" height="871" alt="image" src="https://github.com/user-attachments/assets/a1930fad-9499-4488-9429-6d7c4eec9a7d" />
 
+### 6. Simulated credential dumping (T1003.001)
+Attempted T1003.001-2 (Dump LSASS.exe Memory using comsvcs.dll), a living-off-the-land technique that uses a built-in Windows DLL rather than an external tool. The attempt failed with "Access is denied" before the dump could occur. Checked Windows Security's Protection History and found no entry referencing this attempt, ruling out real-time Defender interception — the block is more likely explained by Windows' built-in LSASS Protected Process Light (PPL) hardening, which restricts memory access to lsass.exe even from an Administrator-level process. This is a stronger result than a clean detection: it shows OS-level hardening stopping credential-access activity before it produced any telemetry for Wazuh to catch.
+<img width="709" height="266" alt="image" src="https://github.com/user-attachments/assets/0cd9d652-009a-4e9d-82a6-7d016b06d0dc" />
+
+
 
 ## Detection Results
 
 | ATT&CK Technique | Detected? | Rule ID | Notes |
 |---|---|---|---|
 | T1059.001 | Yes (default rule, no tuning needed) | 92057 | "Powershell.exe spawned a powershell process which executed a base64 encoded command" — level 12 alert |
+| T1003.001 | Blocked pre-execution | N/A | "Access is denied" attempting to dump LSASS via comsvcs.dll — no corresponding Defender Protection History entry, indicating the block came from Windows' LSASS PPL hardening rather than antivirus |
 
 ## What's Next
 
-Run additional Atomic Red Team techniques (e.g., T1003 credential dumping, T1547.001 persistence) to expand detection coverage across more of the MITRE ATT&CK matrix. Longer-term: extend the lab with a second endpoint to test lateral-movement detection, or a Linux agent with auditd for cross-platform coverage.
+Run additional Atomic Red Team techniques to expand coverage across more of the MITRE ATT&CK matrix — persistence (T1547.001) and lateral movement are good next candidates. Longer-term: extend the lab with a second endpoint, or a Linux agent with auditd for cross-platform coverage.
 
-## Related Projects
-
-- Digital Forensics Case Investigation — CyberDefenders "AfricanFalls" — disk forensics, deleted file recovery, timeline reconstruction
 
 ## Connect
 - [LinkedIn](https://www.linkedin.com/in/zachary-bolgert-77338837b)
