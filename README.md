@@ -164,8 +164,10 @@ Deployed the Wazuh agent from the manager's dashboard (pre-configured with the m
 
 <img width="954" height="821" alt="image" src="https://github.com/user-attachments/assets/2ab76f46-ccdd-4e64-9d7d-2389375012c0" />
 
-### 4. Attack simulation (in progress)
+### 4. Attack simulation 
 Next step: install Atomic Red Team on the Windows endpoint and run a small set of MITRE ATT&CK techniques to test detection coverage.
+<img width="946" height="192" alt="image" src="https://github.com/user-attachments/assets/e8bdf56b-7250-441f-8117-4e6ca0ee327c" />
+
 
 ### 5. Detection tuning (in progress)
 Next step: for any technique not caught by Wazuh's default ruleset, write a custom rule in `local_rules.xml` and confirm it fires correctly.
