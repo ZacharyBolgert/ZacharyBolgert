@@ -182,9 +182,7 @@ Confirmed detection without writing any custom rules — Wazuh's default ruleset
 
 ## What's Next
 
-Finish Atomic Red Team simulation and detection tuning above, then consider extending the lab with a second endpoint to test lateral-movement detection, or a Linux agent with auditd for cross-platform coverage.
-
----
+Run additional Atomic Red Team techniques (e.g., T1003 credential dumping, T1547.001 persistence) to expand detection coverage across more of the MITRE ATT&CK matrix. Longer-term: extend the lab with a second endpoint to test lateral-movement detection, or a Linux agent with auditd for cross-platform coverage.
 
 ## Related Projects
 
