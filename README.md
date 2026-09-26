@@ -193,5 +193,5 @@ Finish Atomic Red Team simulation and detection tuning above, then consider exte
 - Digital Forensics Case Investigation — CyberDefenders "AfricanFalls" — disk forensics, deleted file recovery, timeline reconstruction
 
 ## Connect
-- <a href="www.linkedin.com/in/zachary-bolgert-77338837b">LinkedIn</a>
+- [LinkedIn](https://www.linkedin.com/in/zachary-bolgert-77338837b)
 - Email: ZacharyBolgert1@gmail.com
