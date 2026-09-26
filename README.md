@@ -177,6 +177,9 @@ Confirmed detection without writing any custom rules — Wazuh's default ruleset
 Attempted T1003.001-2 (Dump LSASS.exe Memory using comsvcs.dll), a living-off-the-land technique that uses a built-in Windows DLL rather than an external tool. The attempt failed with "Access is denied" before the dump could occur. Checked Windows Security's Protection History and found no entry referencing this attempt, ruling out real-time Defender interception — the block is more likely explained by Windows' built-in LSASS Protected Process Light (PPL) hardening, which restricts memory access to lsass.exe even from an Administrator-level process. This is a stronger result than a clean detection: it shows OS-level hardening stopping credential-access activity before it produced any telemetry for Wazuh to catch.
 <img width="709" height="266" alt="image" src="https://github.com/user-attachments/assets/0cd9d652-009a-4e9d-82a6-7d016b06d0dc" />
 
+### 7. Simulated persistence (T1547.001)
+Ran T1547.001-1 (Reg Key Run), which adds a registry Run key entry via `reg.exe` — the classic persistence technique for surviving reboots. Detected immediately and accurately by Wazuh's default ruleset: one rule specifically identified the registry modification via `reg.exe` for next-logon execution, and a second, higher-severity rule flagged the value's Base64-like pattern. Cleaned up the added registry key afterward using Atomic Red Team's built-in cleanup command.
+<img width="1919" height="955" alt="image" src="https://github.com/user-attachments/assets/fb0228ba-99ee-444b-8412-ef68d6857869" />
 
 
 ## Detection Results
@@ -185,10 +188,7 @@ Attempted T1003.001-2 (Dump LSASS.exe Memory using comsvcs.dll), a living-off-th
 |---|---|---|---|
 | T1059.001 | Yes (default rule, no tuning needed) | 92057 | "Powershell.exe spawned a powershell process which executed a base64 encoded command" — level 12 alert |
 | T1003.001 | Blocked pre-execution | N/A | "Access is denied" attempting to dump LSASS via comsvcs.dll — no corresponding Defender Protection History entry, indicating the block came from Windows' LSASS PPL hardening rather than antivirus |
-
-## What's Next
-
-Run additional Atomic Red Team techniques to expand coverage across more of the MITRE ATT&CK matrix — persistence (T1547.001) and lateral movement are good next candidates. Longer-term: extend the lab with a second endpoint, or a Linux agent with auditd for cross-platform coverage.
+| T1547.001 | Yes (default rule, no tuning needed) | 92302, 92041 | Registry Run key persistence via reg.exe — caught by both a technique-specific rule and a higher-severity Base64-pattern rule (level 10) |
 
 
 ## Connect
