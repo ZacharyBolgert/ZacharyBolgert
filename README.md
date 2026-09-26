@@ -126,52 +126,71 @@ Investigated using the following views/tools: (FTK Imager for browsing/export, D
 - Network artifact analysis and correlation across multiple evidence sources
 - Formal chain-of-custody and forensic report documentation
 
-## Home SOC Detection Lab
+## Wazuh + Sysmon + Atomic Red Team Detection Lab
 
-This project documents the build of a virtualized Security Operations Center (SOC) lab for simulating a network attack and detecting it with a network security monitoring platform. The lab uses a Security Onion sensor, a Kali Linux attacker machine, and a Metasploitable2 target, all running in VirtualBox on an isolated network. The attack scenarios, detection analysis, and Tier-1 incident triage writeup will be added as they are completed.
+## Overview
 
-## Tools & Technologies
-- VirtualBox (virtualization)
-- Security Onion 3.3.0 (SOC platform)
-- Suricata (network IDS)
-- Zeek (network security monitoring / logging)
-- Kibana / Hunt (log analysis, SOC console)
-- Kali Linux (attacker platform)
-- Metasploitable2 (vulnerable target)
-- Wireshark (packet analysis)
-- TCP/IP fundamentals, packet analysis
-  
-## Network Setup
+A home lab built to practice endpoint detection engineering. I deployed a Wazuh SIEM manager, instrumented a Windows 11 endpoint with Sysmon for detailed telemetry, and enrolled it as a monitored agent. The next phase simulates real attacker techniques with Atomic Red Team and measures detection coverage against the MITRE ATT&CK framework.
 
-## Topology
-- Security Onion (sensor): management NIC enp0s3 — Host-Only, 192.168.56.10/24
-                            sniffing NIC enp0s8 (bonded via bond0) — Internal Network "soc-lab"
-- Kali Linux (attacker):    eth0 — Internal Network "soc-lab", 10.10.10.10/24
-- Metasploitable2 (target): eth0 — Internal Network "soc-lab", 10.10.10.20/24
+**Status:** Wazuh manager and agent enrollment complete. Attack simulation and detection tuning in progress.
 
-## Steps taken
-1. Confirmed initial state: neither Kali nor Metasploitable2 had an IP
-   assigned on eth0 <img width="1568" height="782" alt="image" src="https://github.com/user-attachments/assets/e9efbd32-467f-4666-bb43-64ff39dd851f" />
+---
 
-2. Assigned static IP to Kali:
-   - Quick test: `sudo ip addr add 10.10.10.10/24 dev eth0`
-   - Persisted via NetworkManager:
-     `sudo nmcli con mod "Wired connection 1" ipv4.address 10.10.10.10/24 ipv4.method manual`
-     `sudo nmcli con up "Wired connection 1"`
-3. Assigned static IP to Metasploitable2 by editing /etc/network/interfaces:
-   auto eth0
-   iface eth0 inet static
-       address 10.10.10.20
-       netmask 255.255.255.0
-   Then: `sudo /etc/init.d/networking restart`
-4. Verified both addresses with `ip a` <img width="1919" height="990" alt="Screenshot 2026-09-19 165303" src="https://github.com/user-attachments/assets/49dec51d-d165-417c-acfa-6fc02103dc66" />
+## Architecture
 
-5. Confirmed connectivity: `ping -c 4 10.10.10.20` from Kali
-   <img width="633" height="246" alt="ping request " src="https://github.com/user-attachments/assets/c78266ad-e949-4d8a-8b0a-3a938d64c135" />
+Two VMs on an isolated internal network in VirtualBox:
 
-6. Verified Security Onion sensor health: `sudo so-status`
-   (screenshot: 04-so-status.png)
+| VM | Role | Software |
+|---|---|---|
+| Wazuh Manager | SIEM — indexer, manager, and dashboard (all-in-one install) | Ubuntu Server, Wazuh |
+| Windows 11 Endpoint | Monitored agent, future attack simulation target | Windows 11, Sysmon, Wazuh agent |
 
+**Software:**
+- Wazuh (all-in-one install via the official install script)
+- Sysmon, using the SwiftOnSecurity configuration (github.com/SwiftOnSecurity/sysmon-config)
+- Atomic Red Team (to be used for attack simulation)
+
+---
+
+## Build Steps
+
+### 1. Deployed the Wazuh manager
+Installed Ubuntu Server and ran the official Wazuh all-in-one installer. Hit an early snag where the install script wasn't actually present in the working directory — the first download attempts pointed at the wrong URL (`wazuh.com` instead of the actual package host, `packages.wazuh.com/4.12/wazuh-install.sh`), which silently saved an error page instead of the script. Fixed by pulling the script from the correct URL and confirming it landed with `ls -la` before running the install.
+
+### 2. Installed Sysmon on the Windows 11 endpoint
+Installed Sysmon using the SwiftOnSecurity configuration to get detailed process-creation, network-connection, and registry telemetry beyond default Windows event logging.
+
+### 3. Enrolled the Windows VM as a Wazuh agent
+Deployed the Wazuh agent from the manager's dashboard (pre-configured with the manager address and registration key) and confirmed the agent shows Active in the Wazuh dashboard, with Sysmon events flowing into Security Events.
+
+### 4. Attack simulation (in progress)
+Next step: install Atomic Red Team on the Windows endpoint and run a small set of MITRE ATT&CK techniques to test detection coverage.
+
+### 5. Detection tuning (in progress)
+Next step: for any technique not caught by Wazuh's default ruleset, write a custom rule in `local_rules.xml` and confirm it fires correctly.
+
+---
+
+## Detection Results
+
+*Coming soon — populated once attack simulation is complete.*
+
+| ATT&CK Technique | Detected? | Rule ID | Notes |
+|---|---|---|---|
+| — | — | — | — |
+
+---
+
+## What's Next
+
+Finish Atomic Red Team simulation and detection tuning above, then consider extending the lab with a second endpoint to test lateral-movement detection, or a Linux agent with auditd for cross-platform coverage.
+
+---
+
+## Related Projects
+
+- Digital Forensics Case Investigation — CyberDefenders "AfricanFalls" — disk forensics, deleted file recovery, timeline reconstruction
+- Home SOC Detection Lab — Security Onion — network-level detection with Suricata/Zeek
 
 ## Connect
 - <a href="www.linkedin.com/in/zachary-bolgert-77338837b">LinkedIn</a>
