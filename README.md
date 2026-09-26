@@ -1,8 +1,8 @@
 ## Hello, I'm Zachary Bolgert
-Cybersecurity & Digital Forensics gradate (Cum Laude) from Stevenson University. Focused on incident response, vulnerability management, and digital forensics; currently seeking an entry-level cybersecurity role.  
+Cybersecurity & Digital Forensics graduate (Cum Laude) from Stevenson University. Focused on incident response, vulnerability management, and digital forensics; currently seeking an entry-level cybersecurity role.  
 
 ## Certifications 
--CompTIA Security + (SYO-701)
+-CompTIA Security + (SY0-701)
 
 -CDFAE Digital Forensics Examiner - DoD Cyber Crime Center (DC3) / Stevenson University 
 
@@ -143,7 +143,7 @@ Two VMs on an isolated internal network in VirtualBox:
 
 **Software:**
 - Wazuh (all-in-one install via the official install script)
-- Sysmon, using the SwiftOnSecurity configuration (github.com/SwiftOnSecurity/sysmon-config)
+- Sysmon, using the SwiftOnSecurity configuration ([SwiftOnSecurity's sysmon-config](https://github.com/SwiftOnSecurity/sysmon-config))
 - Atomic Red Team (to be used for attack simulation)
 
 ---
