@@ -307,13 +307,11 @@ attacker to gain unauthorized access to the system or data...
 
 This project set out to test whether a small, locally-run LLM could meaningfully assist with SOC alert triage, using real alert data from my own Wazuh lab. The honest answer is no — not without more work. The model was inconsistent (rating identical alerts differently across runs) and, more seriously, fabricated threat context that wasn't present in the source data. That's a genuinely useful result: it demonstrates the kind of critical evaluation a security practitioner needs to apply to AI tooling before trusting it in a real workflow, rather than assuming AI-generated output is reliable by default.
 
-## Vulnerability Management Lab: Scan, Prioritize, Remediate, Rescan
+## Vulnerability Management Lab: Scan, Prioritize, Remediate, Rescan (In Progress)
 
 ## Overview
 
 A home lab built to practice the vulnerability management lifecycle. I scan an intentionally vulnerable Linux target and a Windows 11 endpoint with Nessus Essentials, rank the findings by real-world risk instead of severity alone (CVSS + EPSS + CISA's Known Exploited Vulnerabilities catalog), fix or mitigate the top findings, and rescan to prove the result. It complements my Wazuh detection lab: that project covered catching attacker activity, this one covers finding and closing the weaknesses attackers use.
-
-<!-- TODO: once finished, add one sentence with the headline result, e.g. "Fixing N findings cut the credentialed Metasploitable scan from X to Y." -->
 
 ## Architecture
 
