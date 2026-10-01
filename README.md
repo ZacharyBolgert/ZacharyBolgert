@@ -374,21 +374,36 @@ New-NetFirewallRule -DisplayName "Lab SMB from Kali" -Direction Inbound -Protoco
 
 ### 3. Took baseline snapshots
 Took a `clean-baseline` snapshot of each VM before running any scans or changing anything, so the lab can be reset for the rescan.
+### 4. Installed Nessus Essentials on the Kali scanner
+Downloaded the Nessus installer from Tenable and installed it on the Kali VM. Nessus Essentials is free under a 30-day license limited to 5 IP addresses, which is enough for this two-target lab. I used the Ubuntu .deb build, since Kali is Debian-based, and it installed without errors. After installing, I started the service and opened the setup page in Firefox at `https://localhost:8834`:
 
-### 4. Installed Nessus Essentials on the Kali scanner 
-Downloaded the Nessus installer from tenable and installed it on the kali VM. Nessus Essentials is free under a 30-day license limited to 5 IP addresses, which is enough for this two-target lab. I used the Ubuntu .deb build, since kali is Debian-based, and it installed without errors. After installing, I started the service and opened the setup page in Firefox at 'https://localhost:8834':
-
-```powershell
-cd ~/Downloads
-sudo dpkg -i Nessus-*.deb
-sudo systemctl start nessusd
-```
-Firefox showed a certificate warning because Nessus uses a self-signed certificate, which is expected for a scanner running locally on my own VM. 
+    cd ~/Downloads
+    sudo dpkg -i Nessus-*.deb
+    sudo systemctl start nessusd
+    
+In the setup wizard I chose Nessus Essentials, entered the activation code Tenable emailed me, and created an admin account. Nessus then downloaded and compiled its plugins, which took about 5 minutes before I could run a scan.
 
 <img width="948" height="533" alt="image" src="https://github.com/user-attachments/assets/547e1a11-16b5-4078-af07-a78bc35728a4" />
 <img width="1782" height="832" alt="image" src="https://github.com/user-attachments/assets/47014470-77d6-4dd6-b0a5-b67889ae0b4e" />
+<img width="1919" height="812" alt="image" src="https://github.com/user-attachments/assets/3863881f-932d-4f6f-a5dc-dbca9eb8d577" />
 
-### 5. Prioritized findings with a Python script
+### 5. Ran the baseline scans
+Ran the scans with default policy settings and will keep them identical for the rescan so the comparison is fair. Because the Nessus Essentials license only covers 5 IPs, I scanned only the two targets and not the Kali scanner itself.
+
+**Scan A: unauthenticated, Metasploitable 2.** Created a Basic Network Scan named `MS2-Unauth-Baseline` targeting `10.10.10.20` with no credentials, which is why the host shows `Auth: N/A`. It finished in 13 minutes and reported 9 Critical, 6 High, 23 Medium, and 9 Low findings, plus 136 informational. The Critical findings included an end-of-life Ubuntu 8.04 operating system, a VNC server using the password "password", the Apache Tomcat AJP "Ghostcat" vulnerability, SSLv2/v3 support, and a bind shell backdoor.
+
+One thing that stood out: Nessus shows an EPSS score next to the CVSS score. The Logjam finding is rated Low by CVSS (3.7), but its EPSS is 0.9986, and the DROWN finding is only Medium (5.9) with an EPSS of 0.8211. Ranking by CVSS alone would bury both, which is why I prioritize with EPSS and KEV in a later step.
+
+<img width="1919" height="793" alt="image" src="https://github.com/user-attachments/assets/4f786dd4-280c-432b-a85f-729f776a01b7" />
+<img width="1919" height="810" alt="image" src="https://github.com/user-attachments/assets/656412c1-6419-458c-a822-c9fb771af175" />
+
+**Scan B: credentialed, Metasploitable 2.**
+<!-- TODO: fill in after Scan B -->
+
+**Scan C: credentialed, Windows 11.**
+<!-- TODO: fill in after Scan C -->
+
+### 6. Prioritized findings with a Python script
 Wrote `kev_triage.py` to read a Nessus CSV export, pull the CISA KEV catalog and EPSS scores, and sort the findings into the priority tiers above. It also has a `compare` mode that diffs a before and after export. The script uses only the standard library, so it runs anywhere with Python 3.
 
 ```bash
@@ -532,13 +547,13 @@ if __name__ == "__main__":
 <!-- TODO: add 1-2 sentences on what the ranking showed, e.g. how many findings were P1 (KEV), and whether the order differed from plain CVSS ranking -->
 <!-- paste screenshot: terminal output of the triage script -->
 
-### 6. Remediated the top findings
+### 7. Remediated the top findings
 <!-- TODO: rewrite with what you actually did. Pick 5-8 findings. Suggested framing: -->
 Chose [N] findings from the top of the prioritized list, including at least one with no CVE. Metasploitable 2 is end-of-life and its package repositories no longer exist, so I couldn't patch it. Fixes were disabling services, changing credentials, and adding firewall rules, which is how legacy systems that can't be patched are handled in practice. Each fix is recorded below with the response type (remediate, mitigate, or accept).
 
 <!-- paste screenshot: evidence a fix worked, e.g. netstat showing a port gone -->
 
-### 7. Rescanned and compared
+### 8. Rescanned and compared
 <!-- TODO: rewrite after the rescan. Suggested content: -->
 Re-ran the same three scans with the same policies and compared them with the script's `compare` mode. [X] findings were fixed, [Y] remained, and [Z] were new. <!-- TODO: explain any new findings or fixed findings that still appeared, honestly, like the LSASS note in your detection lab -->
 
