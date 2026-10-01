@@ -375,15 +375,16 @@ New-NetFirewallRule -DisplayName "Lab SMB from Kali" -Direction Inbound -Protoco
 ### 3. Took baseline snapshots
 Took a `clean-baseline` snapshot of each VM before running any scans or changing anything, so the lab can be reset for the rescan.
 
-<!-- TODO: only keep this step once the snapshots are actually taken -->
+### 4. Installed Nessus Essentials on the Kali scanner 
+Downloaded the Nessus installer from tenable and installed it on the kali VM. Nessus Essentials is free for up to 16 IP addresses, which is plenty for this lab. I used the Ubuntu .deb build, since kali is Debian-based, and it installed without errors. After installing, I started the service and opened the setup page in Firefox at 'https://localhost:8834':
 
-### 4. Ran the baseline scans
-<!-- TODO: rewrite in your own words once done. Suggested content: -->
-Ran three Nessus scans with identical policies so the rescan would be a fair comparison: an unauthenticated and a credentialed scan against Metasploitable 2, and a credentialed scan against Windows 11. The credentialed Metasploitable scan found [X] findings compared with [Y] unauthenticated, because credentialed scans can see installed packages and local configuration. Windows 11 came back with [Z] findings. <!-- TODO: if credentialed auth failed at first, say what you hit and how you fixed it, same as step 2. Confirm credentialed checks worked via plugin 19506 "Nessus Scan Information". -->
+```powershell
+cd ~/Downloads
+sudo dpkg -i Nessus-*.deb
+sudo systemctl start nessusd
+```
 
-<!-- paste screenshot: Nessus severity counts, unauthenticated Metasploitable scan -->
-<!-- paste screenshot: Nessus severity counts, credentialed Metasploitable scan -->
-<!-- paste screenshot: Nessus severity counts, Windows 11 scan -->
+      
 
 ### 5. Prioritized findings with a Python script
 Wrote `kev_triage.py` to read a Nessus CSV export, pull the CISA KEV catalog and EPSS scores, and sort the findings into the priority tiers above. It also has a `compare` mode that diffs a before and after export. The script uses only the standard library, so it runs anywhere with Python 3.
