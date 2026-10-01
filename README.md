@@ -386,6 +386,7 @@ sudo systemctl start nessusd
 Firefox showed a certificate warning because Nessus uses a self-signed certificate, which is expected for a scanner running locally on my own VM. 
 
 <img width="948" height="533" alt="image" src="https://github.com/user-attachments/assets/547e1a11-16b5-4078-af07-a78bc35728a4" />
+<img width="1782" height="832" alt="image" src="https://github.com/user-attachments/assets/47014470-77d6-4dd6-b0a5-b67889ae0b4e" />
 
 ### 5. Prioritized findings with a Python script
 Wrote `kev_triage.py` to read a Nessus CSV export, pull the CISA KEV catalog and EPSS scores, and sort the findings into the priority tiers above. It also has a `compare` mode that diffs a before and after export. The script uses only the standard library, so it runs anywhere with Python 3.
