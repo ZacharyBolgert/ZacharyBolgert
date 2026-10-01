@@ -376,15 +376,16 @@ New-NetFirewallRule -DisplayName "Lab SMB from Kali" -Direction Inbound -Protoco
 Took a `clean-baseline` snapshot of each VM before running any scans or changing anything, so the lab can be reset for the rescan.
 
 ### 4. Installed Nessus Essentials on the Kali scanner 
-Downloaded the Nessus installer from tenable and installed it on the kali VM. Nessus Essentials is free for up to 16 IP addresses, which is plenty for this lab. I used the Ubuntu .deb build, since kali is Debian-based, and it installed without errors. After installing, I started the service and opened the setup page in Firefox at 'https://localhost:8834':
+Downloaded the Nessus installer from tenable and installed it on the kali VM. Nessus Essentials is free for up to 5 IP addresses, which is plenty for this lab. I used the Ubuntu .deb build, since kali is Debian-based, and it installed without errors. After installing, I started the service and opened the setup page in Firefox at 'https://localhost:8834':
 
 ```powershell
 cd ~/Downloads
 sudo dpkg -i Nessus-*.deb
 sudo systemctl start nessusd
 ```
+Firefox showed a certificate warning because Nessus uses a self-signed certificate, which is expected for a scanner running locally on my own VM. 
 
-      
+<img width="948" height="533" alt="image" src="https://github.com/user-attachments/assets/547e1a11-16b5-4078-af07-a78bc35728a4" />
 
 ### 5. Prioritized findings with a Python script
 Wrote `kev_triage.py` to read a Nessus CSV export, pull the CISA KEV catalog and EPSS scores, and sort the findings into the priority tiers above. It also has a `compare` mode that diffs a before and after export. The script uses only the standard library, so it runs anywhere with Python 3.
