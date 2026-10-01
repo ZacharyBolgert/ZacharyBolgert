@@ -307,6 +307,274 @@ attacker to gain unauthorized access to the system or data...
 
 This project set out to test whether a small, locally-run LLM could meaningfully assist with SOC alert triage, using real alert data from my own Wazuh lab. The honest answer is no — not without more work. The model was inconsistent (rating identical alerts differently across runs) and, more seriously, fabricated threat context that wasn't present in the source data. That's a genuinely useful result: it demonstrates the kind of critical evaluation a security practitioner needs to apply to AI tooling before trusting it in a real workflow, rather than assuming AI-generated output is reliable by default.
 
+## Vulnerability Management Lab: Scan, Prioritize, Remediate, Rescan
+
+## Overview
+
+A home lab built to practice the vulnerability management lifecycle. I scan an intentionally vulnerable Linux target and a Windows 11 endpoint with Nessus Essentials, rank the findings by real-world risk instead of severity alone (CVSS + EPSS + CISA's Known Exploited Vulnerabilities catalog), fix or mitigate the top findings, and rescan to prove the result. It complements my Wazuh detection lab: that project covered catching attacker activity, this one covers finding and closing the weaknesses attackers use.
+
+<!-- TODO: once finished, add one sentence with the headline result, e.g. "Fixing N findings cut the credentialed Metasploitable scan from X to Y." -->
+
+## Architecture
+
+Three VMs on an isolated host-only network in VirtualBox, with no route to the internet, so the vulnerable machine is never exposed:
+
+| VM | Role | Software |
+|---|---|---|
+| Kali Linux (10.10.10.10) | Scanner | Kali 2026.2, Nessus Essentials, nmap |
+| Metasploitable 2 (10.10.10.20) | Intentionally vulnerable Linux target | Metasploitable 2 |
+| Windows 11 (10.10.10.30) | Windows target for credentialed scanning | Windows 11 |
+
+**Software:**
+- Nessus Essentials (vulnerability scanner)
+- nmap (connectivity checks)
+- Python 3, standard library only (triage script)
+- CISA KEV catalog and FIRST.org EPSS API (prioritization data)
+- VirtualBox for the lab
+
+**How findings are ranked:**
+
+| Tier | Rule |
+|---|---|
+| P1 - Known exploited | Any CVE on the finding is in the CISA KEV catalog |
+| P2 - High exploit likelihood | EPSS of 0.30 or higher |
+| P3 - High severity | Scanner rates it Critical or High |
+| P4 - Routine | Everything else |
+
+The 0.30 EPSS cutoff is a judgment call rather than a standard. Findings with no CVE (default credentials, cleartext services) can't be ranked by KEV or EPSS, so they fall back to scanner severity.
+
+---
+
+## Build Steps
+
+### 1. Built the isolated lab network
+Put all three VMs on one VirtualBox host-only network with static 10.10.10.0/24 addresses. Kali keeps a second NAT adapter so Nessus can download plugins, while Metasploitable has no internet-facing adapter at all.
+
+<img width="949" height="515" alt="image" src="https://github.com/user-attachments/assets/876d2f7f-00b6-4ddd-a7e5-2b16e89ab933" />
+<img width="913" height="426" alt="image" src="https://github.com/user-attachments/assets/e4b8864f-6fb0-46c5-841d-c70975bcd665" />
+<img width="744" height="218" alt="image" src="https://github.com/user-attachments/assets/ff34f99f-5f7e-4bc2-9b17-765b7e2d355f" />
+
+
+### 2. Fixed connectivity to the Windows VM
+Hit two snags getting the scanner to see Windows. The first test (`nmap -Pn -p 445 10.10.10.30`) reported 0 hosts up, because I had attached the Windows adapter to a VirtualBox Internal Network while Kali was on the Host-only network. VirtualBox only connects adapters that share a network, so the two machines couldn't see each other even though the IP settings were correct. Moving Windows onto the same host-only network fixed discovery, and `nmap -sn` listed all three hosts.
+
+The next check showed port 445 as `filtered`. That meant Kali could reach the host but Windows Defender Firewall was dropping SMB. I set the network profile to Private and added a narrow inbound rule that allows port 445 only from the scanner, instead of enabling the whole File and Printer Sharing group:
+
+```powershell
+Set-NetIPInterface -InterfaceAlias "Ethernet" -Dhcp Disabled
+New-NetIPAddress -InterfaceAlias "Ethernet" -IPAddress 10.10.10.30 -PrefixLength 24
+Set-NetConnectionProfile -InterfaceAlias "Ethernet" -NetworkCategory Private
+New-NetFirewallRule -DisplayName "Lab SMB from Kali" -Direction Inbound -Protocol TCP -LocalPort 445 -RemoteAddress 10.10.10.10 -Action Allow
+```
+
+<img width="639" height="421" alt="image" src="https://github.com/user-attachments/assets/efc8e77c-345f-4c57-8fed-574558e3145c" />
+<img width="695" height="213" alt="image" src="https://github.com/user-attachments/assets/368f9e09-4927-430d-90d1-f9330a57d30f" />
+<img width="650" height="210" alt="image" src="https://github.com/user-attachments/assets/ed860034-5d65-4ce9-a971-44c168e535e6" />
+
+
+### 3. Took baseline snapshots
+Took a `clean-baseline` snapshot of each VM before running any scans or changing anything, so the lab can be reset for the rescan.
+
+<!-- TODO: only keep this step once the snapshots are actually taken -->
+
+### 4. Ran the baseline scans
+<!-- TODO: rewrite in your own words once done. Suggested content: -->
+Ran three Nessus scans with identical policies so the rescan would be a fair comparison: an unauthenticated and a credentialed scan against Metasploitable 2, and a credentialed scan against Windows 11. The credentialed Metasploitable scan found [X] findings compared with [Y] unauthenticated, because credentialed scans can see installed packages and local configuration. Windows 11 came back with [Z] findings. <!-- TODO: if credentialed auth failed at first, say what you hit and how you fixed it, same as step 2. Confirm credentialed checks worked via plugin 19506 "Nessus Scan Information". -->
+
+<!-- paste screenshot: Nessus severity counts, unauthenticated Metasploitable scan -->
+<!-- paste screenshot: Nessus severity counts, credentialed Metasploitable scan -->
+<!-- paste screenshot: Nessus severity counts, Windows 11 scan -->
+
+### 5. Prioritized findings with a Python script
+Wrote `kev_triage.py` to read a Nessus CSV export, pull the CISA KEV catalog and EPSS scores, and sort the findings into the priority tiers above. It also has a `compare` mode that diffs a before and after export. The script uses only the standard library, so it runs anywhere with Python 3.
+
+```bash
+python3 kev_triage.py triage scans/ms2-cred-before.csv -o ms2-prioritized-before.csv
+python3 kev_triage.py compare scans/ms2-cred-before.csv scans/ms2-cred-after.csv
+```
+
+<details>
+<summary>View kev_triage.py</summary>
+
+```python
+#!/usr/bin/env python3
+"""kev_triage.py - risk-based triage of a Nessus CSV export.
+
+Usage:
+  python kev_triage.py triage  scan.csv  -o prioritized.csv
+  python kev_triage.py compare before.csv after.csv
+
+Offline testing: add --kev-file kev.csv and --no-epss
+"""
+import argparse, csv, json, os, re, sys, urllib.request
+
+KEV_URL = ("https://www.cisa.gov/sites/default/files/csv/"
+           "known_exploited_vulnerabilities.csv")
+EPSS_API = "https://api.first.org/data/v1/epss?cve="
+CVE_RE = re.compile(r"CVE-\d{4}-\d{4,}", re.I)
+RISK_RANK = {"Critical": 4, "High": 3, "Medium": 2, "Low": 1, "None": 0}
+
+
+def load_kev(path=None):
+    """Return the set of CVE IDs in CISA's KEV catalog."""
+    if path and os.path.exists(path):
+        text = open(path, encoding="utf-8-sig").read()
+    else:
+        with urllib.request.urlopen(KEV_URL, timeout=30) as r:
+            text = r.read().decode("utf-8-sig")
+    return {row["cveID"].upper() for row in csv.DictReader(text.splitlines())}
+
+
+def load_epss(cves):
+    """Return {CVE: EPSS probability} using the free FIRST.org API."""
+    scores, cves = {}, sorted(cves)
+    for i in range(0, len(cves), 50):
+        url = EPSS_API + ",".join(cves[i:i + 50])
+        with urllib.request.urlopen(url, timeout=30) as r:
+            for item in json.load(r).get("data", []):
+                scores[item["cve"].upper()] = float(item["epss"])
+    return scores
+
+
+def read_findings(path):
+    rows = []
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        for row in csv.DictReader(f):
+            if row.get("Risk", "None") in ("None", ""):
+                continue  # skip informational plugins
+            row["_cves"] = sorted({c.upper() for c in CVE_RE.findall(row.get("CVE", ""))})
+            rows.append(row)
+    return rows
+
+
+def tier(in_kev, epss, risk):
+    if in_kev:
+        return "P1 - Known exploited (KEV)"
+    if epss >= 0.30:
+        return "P2 - High exploit likelihood"
+    if risk in ("Critical", "High"):
+        return "P3 - High severity"
+    return "P4 - Routine"
+
+
+def triage(args):
+    findings = read_findings(args.scan)
+    kev = load_kev(args.kev_file)
+    all_cves = {c for f in findings for c in f["_cves"]}
+    epss = {} if args.no_epss else load_epss(all_cves)
+    out = []
+    for f in findings:
+        in_kev = any(c in kev for c in f["_cves"])
+        top_epss = max([epss.get(c, 0.0) for c in f["_cves"]] or [0.0])
+        out.append({
+            "Priority": tier(in_kev, top_epss, f.get("Risk", "")),
+            "Host": f.get("Host", ""), "Port": f.get("Port", ""),
+            "Plugin ID": f.get("Plugin ID", ""), "Name": f.get("Name", ""),
+            "Risk": f.get("Risk", ""), "CVEs": " ".join(f["_cves"]) or "No CVE",
+            "In KEV": "YES" if in_kev else "no", "EPSS": round(top_epss, 4),
+            "Solution": f.get("Solution", "")[:200],
+        })
+    out.sort(key=lambda r: (r["Priority"], -r["EPSS"], -RISK_RANK.get(r["Risk"], 0)))
+    with open(args.output, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=list(out[0].keys()))
+        w.writeheader()
+        w.writerows(out)
+    counts = {}
+    for r in out:
+        counts[r["Priority"]] = counts.get(r["Priority"], 0) + 1
+    print(f"{len(out)} findings written to {args.output}")
+    for k in sorted(counts):
+        print(f"  {k}: {counts[k]}")
+
+
+def key(row):
+    return (row.get("Host", ""), row.get("Port", ""), row.get("Plugin ID", ""))
+
+
+def compare(args):
+    before = {key(r): r for r in read_findings(args.before)}
+    after = {key(r): r for r in read_findings(args.after)}
+    fixed = [before[k] for k in before if k not in after]
+    still = [before[k] for k in before if k in after]
+    new = [after[k] for k in after if k not in before]
+    print(f"Before: {len(before)} | After: {len(after)}")
+    print(f"Fixed: {len(fixed)} | Still open: {len(still)} | New: {len(new)}")
+    if before:
+        print(f"Reduction: {100 * len(fixed) / len(before):.1f}%")
+    for label, rows in (("FIXED", fixed), ("NEW", new)):
+        print(f"\n{label}:")
+        for r in rows:
+            print(f"  [{r.get('Risk')}] {r.get('Host')}:{r.get('Port')} {r.get('Name')}")
+
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser(description=__doc__)
+    sub = p.add_subparsers(dest="cmd", required=True)
+    t = sub.add_parser("triage")
+    t.add_argument("scan")
+    t.add_argument("-o", "--output", default="prioritized.csv")
+    t.add_argument("--kev-file")
+    t.add_argument("--no-epss", action="store_true")
+    t.set_defaults(fn=triage)
+    c = sub.add_parser("compare")
+    c.add_argument("before")
+    c.add_argument("after")
+    c.set_defaults(fn=compare)
+    a = p.parse_args()
+    a.fn(a)
+```
+
+</details>
+
+<!-- TODO: add 1-2 sentences on what the ranking showed, e.g. how many findings were P1 (KEV), and whether the order differed from plain CVSS ranking -->
+<!-- paste screenshot: terminal output of the triage script -->
+
+### 6. Remediated the top findings
+<!-- TODO: rewrite with what you actually did. Pick 5-8 findings. Suggested framing: -->
+Chose [N] findings from the top of the prioritized list, including at least one with no CVE. Metasploitable 2 is end-of-life and its package repositories no longer exist, so I couldn't patch it. Fixes were disabling services, changing credentials, and adding firewall rules, which is how legacy systems that can't be patched are handled in practice. Each fix is recorded below with the response type (remediate, mitigate, or accept).
+
+<!-- paste screenshot: evidence a fix worked, e.g. netstat showing a port gone -->
+
+### 7. Rescanned and compared
+<!-- TODO: rewrite after the rescan. Suggested content: -->
+Re-ran the same three scans with the same policies and compared them with the script's `compare` mode. [X] findings were fixed, [Y] remained, and [Z] were new. <!-- TODO: explain any new findings or fixed findings that still appeared, honestly, like the LSASS note in your detection lab -->
+
+<!-- paste screenshot: compare script output -->
+
+## Results
+
+<!-- TODO: fill in with your real numbers -->
+
+| Target | Scan | Critical | High | Medium | Low | Total |
+|---|---|---|---|---|---|---|
+| Metasploitable 2 | Unauthenticated, before | TBD | TBD | TBD | TBD | TBD |
+| Metasploitable 2 | Credentialed, before | TBD | TBD | TBD | TBD | TBD |
+| Metasploitable 2 | Credentialed, after | TBD | TBD | TBD | TBD | TBD |
+| Windows 11 | Credentialed, before | TBD | TBD | TBD | TBD | TBD |
+| Windows 11 | Credentialed, after | TBD | TBD | TBD | TBD | TBD |
+
+**Remediation log:**
+
+| Finding | Plugin ID | Priority | Response | Change made | Result |
+|---|---|---|---|---|---|
+| TBD | TBD | TBD | TBD | TBD | TBD |
+
+## Conclusion
+
+<!-- TODO: write after the lab is done, in the same honest style as your other conclusions. Cover: what the credentialed scan found that the unauthenticated scan missed; how many findings were known-exploited (KEV) and whether ranking by KEV/EPSS changed the order compared with CVSS alone; what you could not patch and how you handled it; anything that surprised you or didn't go as planned; what you would add in a real environment (asset criticality, change windows, recurring scheduled scans). -->
+
+TBD
+
+## Skills Demonstrated
+
+<!-- TODO: keep only what you actually did -->
+- Vulnerability scanning with Nessus (unauthenticated and credentialed)
+- Risk-based prioritization using CVSS, EPSS, and CISA KEV
+- Python automation for scan triage and before/after comparison
+- Remediation planning (remediate, mitigate, accept) and verification by rescan
+- Isolated lab design and network troubleshooting (VirtualBox, nmap)
+- Windows firewall and network profile configuration (PowerShell)
+- Documenting findings and remediation in a repeatable format
 ## Connect
 - [LinkedIn](https://www.linkedin.com/in/zachary-bolgert-77338837b)
 - Email: ZacharyBolgert1@gmail.com
