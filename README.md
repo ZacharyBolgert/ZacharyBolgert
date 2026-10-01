@@ -376,7 +376,7 @@ New-NetFirewallRule -DisplayName "Lab SMB from Kali" -Direction Inbound -Protoco
 Took a `clean-baseline` snapshot of each VM before running any scans or changing anything, so the lab can be reset for the rescan.
 
 ### 4. Installed Nessus Essentials on the Kali scanner 
-Downloaded the Nessus installer from tenable and installed it on the kali VM. Nessus Essentials is free for up to 5 IP addresses, which is plenty for this lab. I used the Ubuntu .deb build, since kali is Debian-based, and it installed without errors. After installing, I started the service and opened the setup page in Firefox at 'https://localhost:8834':
+Downloaded the Nessus installer from tenable and installed it on the kali VM. Nessus Essentials is free under a 30-day license limited to 5 IP addresses, which is enough for this two-target lab. I used the Ubuntu .deb build, since kali is Debian-based, and it installed without errors. After installing, I started the service and opened the setup page in Firefox at 'https://localhost:8834':
 
 ```powershell
 cd ~/Downloads
