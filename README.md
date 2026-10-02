@@ -1,5 +1,5 @@
 ## Hello, I'm Zachary Bolgert
-Cybersecurity & Digital Forensics graduate (Cum Laude) from Stevenson University. Focused on incident response, vulnerability management, and digital forensics; currently seeking an entry-level cybersecurity role.  
+Cybersecurity professional with a strong foundation in security operations, detection engineering, incident response, and digital forensics. Cybersecurity and Digital Forensics graduate (B.S., Cum Laude, Stevenson University) holding CompTIA Security+ and DoD Cyber Crime Center (DC3) CDFAE forensic certifications. Hands-on experience deploying Wazuh SIEM/Sysmon telemetry, mapping detections to MITRE ATT&CK with Atomic Red Team, log/SIEM analysis, and disk/memory forensics.
 
 ## Certifications 
 -CompTIA Security + (SY0-701)
