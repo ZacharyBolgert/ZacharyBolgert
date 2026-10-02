@@ -388,7 +388,7 @@ In the setup wizard I chose Nessus Essentials, entered the activation code Tenab
 ### 5. Ran the baseline scans
 Ran the scans with default policy settings and will keep them identical for the rescan so the comparison is fair. Because the Nessus Essentials license only covers 5 IPs, I scanned only the two targets and not the Kali scanner itself.
 
-**Scan A: unauthenticated, Metasploitable 2.** Created a Basic Network Scan named `MS2-Unauth-Baseline` targeting `10.10.10.20` with no credentials, which is why the host shows `Auth: N/A`. It finished in 13 minutes and reported 9 Critical, 6 High, 23 Medium, and 9 Low findings, plus 136 informational. The Critical findings included an end-of-life Ubuntu 8.04 operating system, a VNC server using the password "password", the Apache Tomcat AJP "Ghostcat" vulnerability, SSLv2/v3 support, and a bind shell backdoor.
+**Scan A: unauthenticated, Metasploitable 2.** Created a Basic Network Scan named `MS2-Unauth-Baseline` targeting `10.10.10.20` with no credentials, which is why the host shows `Auth: Fail`. It finished in 13 minutes and reported 9 Critical, 6 High, 23 Medium, and 9 Low findings, plus 136 informational. The Critical findings included an end-of-life Ubuntu 8.04 operating system, a VNC server using the password "password", the Apache Tomcat AJP "Ghostcat" vulnerability, SSLv2/v3 support, and a bind shell backdoor.
 
 One thing that stood out: Nessus shows an EPSS score next to the CVSS score. The Logjam finding is rated Low by CVSS (3.7), but its EPSS is 0.9986, and the DROWN finding is only Medium (5.9) with an EPSS of 0.8211. Ranking by CVSS alone would bury both, which is why I prioritize with EPSS and KEV in a later step.
 
