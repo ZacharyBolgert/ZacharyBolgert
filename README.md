@@ -13,7 +13,7 @@ Cybersecurity & Digital Forensics graduate (Cum Laude) from Stevenson University
 | Project Name | Tech Stack / Skills | Description | View Project |
 | :--- | :--- | :--- | :--- |
 | **Digital Forensic Case Study: AfricanFalls** | 🛡️ FTK Imager, Timeline Explorer, SQLite, PECmd, DCode | Investigation of a suspect's laptop logical image from a CyberDefenders CTF. Reconstructed timeline, recovered deleted password wordlists from the Recycle Bin, mapped Tor/ProtonMail anti-forensics, and extracted PowerShell history showing active `nmap` and `bettercap` attacks. | [📂 View Repository](https://github.com) |
-| Wazuh + Sysmon + Atomic Red Team Detection Lab | 💻 HTML, CSS, JavaScript | Interactive web application dashboard. | [📂 View Repository](https://github.com) |
+| **Wazuh + Sysmon + Atomic Red Team Detection Lab** | 🛡️ Wazuh SIEM, Sysmon, VirtualBox, Ubuntu Server, PowerShell | Endpoint detection engineering lab mapping telemetry against the MITRE ATT&CK framework. Deployed an all-in-one Wazuh manager and monitored a Windows 11 endpoint. Executed attack simulations to validate default rulesets—successfully alerting on Base64 PowerShell execution (T1059.001) and Registry persistence (T1547.001), while validating Windows PPL OS-hardening blocks on LSASS credential dumping (T1003.001). | [📂 View Repository]() |
 | AI-Assisted Alert Triage for Wazuh | 🛡️ CompTIA, Networking | Network traffic analysis and threat mitigation. | [📂 View Repository](https://github.com) |
 | Vulnerability Management Lab: Scan, Prioritize, Remediate, Rescan |                          
 
