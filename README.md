@@ -396,7 +396,9 @@ One thing that stood out: Nessus shows an EPSS score next to the CVSS score. The
 <img width="1919" height="810" alt="image" src="https://github.com/user-attachments/assets/656412c1-6419-458c-a822-c9fb771af175" />
 
 **Scan B: credentialed, Metasploitable 2.**
-<!-- TODO: fill in after Scan B -->
+<img width="1919" height="853" alt="image" src="https://github.com/user-attachments/assets/3ea6e079-51a8-4b08-9c4c-c97caade69d4" />
+<img width="1913" height="912" alt="image" src="https://github.com/user-attachments/assets/f258bffc-5e85-4f55-9f69-a03b0a6e18ab" />
+
 
 **Scan C: credentialed, Windows 11.**
 <!-- TODO: fill in after Scan C -->
